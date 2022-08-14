@@ -14,7 +14,6 @@ def createUniqueFile():
     bufferSize = 8  # Adjust this according to how "memory efficient" you need the program to be.
 
     with open("/tmp/" +target_filename, 'wb') as destFile:
-        print("heey")
         for fileName in S3FileUploader.get_files(my_bucket):#get_file_names(s3_client.list_objects(Bucket=my_bucket)):
             with urlopen(Request(s3_endpoint + "/" + my_bucket + "/" + fileName, headers={"Accept-Encoding": "gzip"})) as response, \
                  GzipFile(fileobj=response) as gzipfile:

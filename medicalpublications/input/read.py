@@ -7,12 +7,7 @@ def read():
     date = "2021/12/13/"
     bucket_name = "sources-medical-publications"
 
-    print("testing")
-    result1 = requests.get("http://www.google.com")
-    
-    print("Going to run request")
     ## TODO: Add check that validates that size is always under lambda maximum
     result = requests.get(base_url + example_file)
 
-    print("Request ran! Going to upload to s3")
     S3FileUploader.upload_bytes(date+example_file, result.content, bucket_name)

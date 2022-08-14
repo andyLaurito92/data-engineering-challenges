@@ -9,3 +9,12 @@ services:
       # - "4572:4572" Old S3 port
     volumes:
       - ./:/docker-entrypoint-initaws.d
+  postgress:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: example
+      PGDATA: /tmp/postgres
+    ports:
+      - "5432:5433"
