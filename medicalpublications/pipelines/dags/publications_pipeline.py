@@ -13,6 +13,7 @@ with DAG("medical_publications_pipeline",
          catchup=False  # Catchup 
          ) as dag:
 
+    ## TODO: Why the PythonOperator is not working in Airflow?
     extract_files = BashOperator(task_id="Extract_from_ncbi", bash_command="curl -X GET https://ftp.ncbi.nlm.nih.gov/pubmed/updatefiles/pubmed22n1115.xml.gz --output pubmed22n1115.xml.gz")
     #extract_files = PythonOperator(task_id="Extract_from_ncbi", python_callable=read)
     uncompress_files = PythonOperator(task_id="Uncompress", python_callable=unzip)
