@@ -18,9 +18,14 @@ The first file contains information related to medical publications which is com
 1. To make the data downloadble as a whole
 2. To make data queryable for a specific keyword (for example "TP53") and a given frame (Pubdate)
 
+
+## Solutions
+
+I'll be working in 2 different solutions to compare one against another. The first solution is a lakehouse architecture, which I'm implementing in this branch. The other solution is using a datawarehouse. I'm implementing this second solution in this branch [dw_implementation](https://github.com/andyLaurito92/data-engineering-challenges/tree/dw_implementation) 
+
 ## Architecture details
 
-The solution I'm working on can be depicted in the following architecture diagram:
+The solution I'm working on in this branch can be depicted in the following architecture diagram:
 
 ![architecture_diagram.jpg](Data_consumption.jpg)
 
@@ -63,7 +68,7 @@ In order to run this project you need docker. If you don't have Docker desktop i
 
 Once you have docker, just run `./run.sh` to spin up localstack, airflow standalone and to install the python project locally.
 
-Airflow should be accesible from `http://localhost:8080`. The username and password are `admin` and `admin` 
+Airflow should be accesible from `http://localhost:8080/home` (no username or password required).
 
 Localstack should be accessible from `http://localhost:4566/`. The name of the buckets this project will create can be found in `buckets.sh`. These names are:
 1. s3://sources-medical-publications

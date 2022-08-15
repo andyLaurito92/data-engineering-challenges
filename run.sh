@@ -2,4 +2,4 @@ pip install -e .
 
 docker-compose up -d
 
-airflow standalone
+AIRFLOW_HOME="$(pwd)/medicalpublications/pipelines/" airflow standalone
