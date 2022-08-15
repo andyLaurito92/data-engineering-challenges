@@ -30,7 +30,7 @@ The solution I'm working on in this branch can be depicted in the following arch
 ![architecture_diagram.jpg](Data_consumption.jpg)
 
 
-The idea is to implement a lakehouse architecture using S3 buckets as data lakes. As it can be seen in the image above, I'll be fetching the compress xml files and store them in an initial S3 bucket (also called `sources-medical-publications`). After this upload happens, two scripts will be trigger: 
+The idea is to implement a lakehouse architecture using S3 buckets as my data lake. As it can be seen in the image above, I'll be fetching the compress xml files and store them in an initial S3 bucket (also called `sources-medical-publications`). After this upload happens, two scripts will be trigger: 
 
 1. `crateoutput.py`: This script will create a file which will contain the uploaded file + an existing .gz file which contains all the compress files up to the current date. This new file will be stored in bucket `output-medical-publications` using as key the date in which it was generated. This is the file that was requested in goal 1.
 2. `uncompress.py`: Will uncompressed the uploaded file and store it bucket `uncompressed-medical-publications` using as key the current date. This bucket will be the source of the delta lake tables.
