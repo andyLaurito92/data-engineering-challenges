@@ -1,63 +1,65 @@
 ## Uplaods the xml into postgres
-from urllib.request import urlopen, Request
+#from urllib.request import urlopen, Request
 import pandas as pd
-import xml.etree.ElementTree as ET
-#from lxml import etree
-import psycopg2
+from lxml import etree
 
 ## Convert xml into data that can be uploaded to sql
-def insert_xml_into_postgress():
-    base_url = "http://localhost:4566/uncompressed-medical-publications/"
-    example_file = "pubmed22n1115.xml"
-    date = "2021/12/13/"
+base_url = "http://localhost:4566/uncompressed-medical-publications/"
+example_file = "pubmed22n1115.xml"
+date = "2021/12/13/"
 
-    ## Read xml
-    #result = requests.get(base_url + date + example_file) 
-    #xml = result.content
+## Write pubmed xml into sql
+pubmed_article = etree.parse("/Users/andylaurito/Desktop/data-engineering/data-engineering-challenge/bayer-challenge/pubmedArticle.xml")
 
-    ## Create psql connection
-    # conn_string = ("host=host dbname=lal user=user password=pass")
-    # conn = psycopg2.connect(conn_string)
-    # cursor = conn.cursor()
+pubmed_columns=[
+    "PMID",
+#    "DateCompleted",
+#    "DateRevised",
+    "ArticleTitle",
+    "Language",
+    "Author",
+    "Chemical",
+    "Abstract"
+]
 
-    ## Write xml into sql
-    tree = ET.parse(xml)
-    root = tree.getroot()
-    for pubmed_article in root.iter("PubmedArticle"):
-        pubmed_data = pubmed_article.find("PubmedData")
+## Columns pick up arbitarly
+#date_completed = pubmed_article.xpath("//{}/*/text()".format(pubmed_columns[0]))
+#date_revised = pubmed_article.xpath("//{}/*/text()".format(pubmed_columns[1]))
+pmid = pubmed_article.xpath("//{}/text()".format(pubmed_columns[0]))[0]
+article_title = pubmed_article.xpath("//{}/text()".format(pubmed_columns[1]))[0]
+language = pubmed_article.xpath("//{}/text()".format(pubmed_columns[2]))[0]
+authors = []
+for auth in pubmed_article.xpath("//{}".format(pubmed_columns[3])):
+    last_name_xpath = auth.xpath("LastName/text()")
+    fore_name_xpath = auth.xpath("ForeName/text()")
+    fore_name = ""
+    last_name = ""
+    if len(last_name_xpath) != 0:
+        last_name = last_name_xpath[0]
+    else:
+        print("last name was empty")
 
-        ## Nodes under pubmed data
-        history = pubmed_data.find("History")
-        publicationStatus = pubmed_data.find("PublicationStatus")
-        articleIdList = pubmed_data.find("ArticleIdList")
-        referenceList = pubmed_data.find("ReferenceList")
+    if len(fore_name_xpath) != 0:
+        fore_name = fore_name_xpath[0]
+    else:
+        print("fore name was empty")
 
-        ## Nodes under medline citation
-        medline_citation = pubmed_article.find("MedlineCitation")
-        pmid = medline_citation.find("PMID")
-        date_completed = medline_citation.find("DateCompleted")
-        date_revised = medline_citation.find("DateRevised")
-        article = medline_citation.find("Article")
-        medline_journal_info = medline_citation.find("MedlineJournalInfo")
-        chemical_list = medline_citation.find("ChemicalList")
-        citation_subset = medline_citation.find("CitationSubset")
-        meshHeading_list = medline_citation.find("MeshHeadingList")
-        keyword_list = medline_citation.find("KeywordList")
-        coi_statement = medline_citation.find("CoiStatement")
+    authors.append("{} {}".format(fore_name, last_name))
 
+chemicals = []
+for chemical in pubmed_article.xpath("//{}".format(pubmed_columns[4])):
+    registry_number = chemical.xpath("RegistryNumber/text()")[0]
+    substance = chemical.xpath("NameOfSubstance/text()")[0]
+    chemicals.append("{} : {}".format(registry_number, substance))
 
-        dfs_data = []
-        for node in [history, publicationStatus, articleIdList, referenceList]:
-            dfs_data.append(pd.read_xml(ET.tostring(node)))
-        
-        for elem in pubmed_data:
-            print(elem)
-        
-        for elem in pubmed_data:
-            print(elem)
-        return
-        #postgres = ('INSERT INTO epg_live (channel_id, program, start, duration) VALUES (%s, %s, %s, %s)', (row, row, row, row))
-        #cursor.execute(parser,postgres)
-        #cursor.commit()
-        #print "Gotovo!"
+abstract = ""
+abstract_xpath = pubmed_article.xpath("//{}/*/text()".format(pubmed_columns[5]))
+if len(abstract_xpath) != 0:
+    abstract = abstract_xpath[0]
 
+row_pubmed = [pmid, article_title, language, abstract]
+row_authors = names
+row_chemicals = chemicals
+
+df = pd.DataFrame([row_pubmed], columns=["PMID", "Title", "Language", "Abstract"])
+## From now on, we can define our diemnsions
