@@ -6,7 +6,7 @@ from medicalpublications.libraries.fileUploader import S3FileUploader
 my_bucket = "sources-medical-publications"
 s3_endpoint = "http://localhost:4566"
 
-target_filename = 'allfiles.gz'
+target_filename = 'allfiles.xml.gz'
 today = date.today().strftime("%y/%m/%d")
 bucket_result = "output-medical-publications"
 
