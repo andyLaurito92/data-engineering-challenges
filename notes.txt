@@ -1,0 +1,17 @@
+In order to run spark locally with the support of reading xml run it like this:
+
+
+spark-shell --packages com.databricks:spark-xml_2.12:0.15.0 (This is bc I have version Scala version 2.12.15 of Scala). If you get a ProductClass error in scala when running spark, then you have to match this dependency with the scala version :)
+
+
+2. In order to load the xml as a dataframe 
+
+import org.apache.spark.sql.SQLContext
+val sqlContext = new SQLContext(sc)
+val df = sqlContext.read.format("com.databricks.spark.xml").option("rowTag", "PubmedArticle").load("pubmed22n1115.xml")
+
+// Register the above dataframe as a table
+df.registerTempTable("pubmedarticle");
+
+// Query the data using sql
+sqlContext.sql("select * from pubmedarticle limit 10").show();
